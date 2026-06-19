@@ -1,0 +1,25 @@
+{
+  "id": "first_clearing",
+  "name": "The Clearing",
+  "descriptionInkKnot": "first_clearing",
+  "shortDescription": "Forest clearing",
+  "exits": [
+    { "direction": "north", "targetRoomId": "forest_path_b", "label": "Continue north through the clearing" },
+    { "direction": "east", "targetRoomId": "hollow_log", "label": "Take the path east" },
+    { "direction": "south", "targetRoomId": "forest_path_a", "label": "Go back south" }
+  ],
+  "objects": [
+    {
+      "id": "note_1",
+      "label": "Paper under the log",
+      "examineInkKnot": "read_note_1",
+      "requiredFlag": "found_note_1"
+    }
+  ],
+  "ambientTracks": [
+    { "file": "ambient/forest_night.mp3", "volume": 0.65, "loop": true }
+  ],
+  "sanityDrainPerTick": 1.2,
+  "entitySpawnTable": [{ "entityId": "the_stalker", "probability": 0.3 }],
+  "tags": ["forest", "clearing", "night"]
+}
