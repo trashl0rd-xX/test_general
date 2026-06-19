@@ -1,0 +1,35 @@
+{
+  "name": "nightfield",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@react-navigation/native": "^7.3.3",
+    "@react-navigation/native-stack": "^7.17.5",
+    "expo": "~56.0.12",
+    "expo-av": "^16.0.8",
+    "expo-file-system": "~56.0.8",
+    "expo-haptics": "~56.0.3",
+    "expo-keep-awake": "~56.0.3",
+    "expo-sqlite": "~56.0.5",
+    "expo-status-bar": "~56.0.4",
+    "inkjs": "^2.4.0",
+    "react": "19.2.3",
+    "react-native": "0.85.3",
+    "react-native-reanimated": "4.3.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "4.25.2",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "ink": "node node_modules/inkjs/bin/inkjs-compiler.js assets/story/main.ink -o assets/story/main.ink.json"
+  },
+  "private": true
+}

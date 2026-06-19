@@ -1,0 +1,29 @@
+{
+  "id": "the_stalker",
+  "name": "It",
+  "currentRoomId": "hollow_log",
+  "behavior": "patrol",
+  "patrolRoute": ["hollow_log", "forest_path_b", "dense_thicket", "forest_path_a"],
+  "detectionRange": 1,
+  "proximityText": [
+    "Something moves in the trees beside you. You don't look.",
+    "A branch cracks. Deliberate, like a knuckle.",
+    "The forest goes quiet in a direction that moves.",
+    "Your shadow on the ground is wrong. There's a second one."
+  ],
+  "encounterInkKnot": "dense_thicket_encounter",
+  "encounterResponses": [
+    {
+      "choiceLabel": "Run",
+      "inkKnot": "dense_thicket_encounter",
+      "sanityEffect": -8
+    },
+    {
+      "choiceLabel": "Go very still",
+      "inkKnot": "dense_thicket_encounter",
+      "sanityEffect": 3
+    }
+  ],
+  "sanityDrainOnProximity": 5,
+  "isKillable": false
+}

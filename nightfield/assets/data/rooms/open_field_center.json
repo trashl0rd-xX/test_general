@@ -1,0 +1,17 @@
+{
+  "id": "open_field_center",
+  "name": "The Field",
+  "descriptionInkKnot": "open_field_center",
+  "shortDescription": "Open field",
+  "exits": [
+    { "direction": "north", "targetRoomId": "treeline_north", "label": "Move toward the light" },
+    { "direction": "none", "targetRoomId": "open_field_center", "label": "Search the field" },
+    { "direction": "none", "targetRoomId": "open_field_center", "label": "Stand still and listen" }
+  ],
+  "objects": [],
+  "ambientTracks": [
+    { "file": "ambient/wind_grass.mp3", "volume": 0.7, "loop": true }
+  ],
+  "sanityDrainPerTick": 0.5,
+  "tags": ["outdoor", "open", "night", "stars"]
+}
