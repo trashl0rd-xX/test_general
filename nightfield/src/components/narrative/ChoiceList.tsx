@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import type { NarrativeChoice } from '../../types/narrative';
 import { useGameStore } from '../../store/gameStore';
 
@@ -29,6 +29,7 @@ export function ChoiceList({ choices, onChoose, visible, style }: Props) {
 
   return (
     <View style={[styles.container, style]}>
+      <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
       {withPhantom.map((choice, i) => (
         <Pressable
           key={`choice-${choice.index}-${i}`}
@@ -47,12 +48,14 @@ export function ChoiceList({ choices, onChoose, visible, style }: Props) {
           </Text>
         </Pressable>
       ))}
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    maxHeight: 280,
     paddingHorizontal: 24,
     paddingBottom: 32,
     gap: 4,

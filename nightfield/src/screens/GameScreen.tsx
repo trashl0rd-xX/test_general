@@ -6,9 +6,11 @@ import { useGameStore } from '../store/gameStore';
 import { narrativeEngine } from '../engine/narrativeEngine';
 import { entitySystem } from '../engine/entitySystem';
 import { saveGame } from '../engine/saveSystem';
+import { startAmbient, stopAmbient, setAmbientIntensity } from '../engine/ambientAudio';
 import { TextViewport } from '../components/narrative/TextViewport';
 import { ChoiceList } from '../components/narrative/ChoiceList';
 import { SanityIndicator } from '../components/hud/SanityIndicator';
+import { StarField } from '../components/hud/StarField';
 import type { NarrativeChoice } from '../types/narrative';
 
 // Ink story — compiled JSON bundled at build time
@@ -64,7 +66,13 @@ export function GameScreen({ onTitle }: Props) {
     return () => clearInterval(interval);
   }, [currentRoomId, phase]);
 
-  // Haptic feedback when sanity crosses thresholds
+  // Ambient infrasound — start on mount, scale with sanity
+  useEffect(() => {
+    startAmbient();
+    return () => { stopAmbient(); };
+  }, []);
+
+  // Haptic feedback + ambient intensity when sanity changes
   const prevSanity = useRef<number>(useGameStore.getState().sanity);
   useEffect(() => {
     return useGameStore.subscribe(
@@ -78,6 +86,7 @@ export function GameScreen({ onTitle }: Props) {
         if (sanity <= 0) {
           useGameStore.getState().setPhase('gameover');
         }
+        setAmbientIntensity(Math.max(0, 1 - sanity / 100));
       }
     );
   }, []);
@@ -112,6 +121,7 @@ export function GameScreen({ onTitle }: Props) {
       <View style={{ height: insets.top }}>
         <SanityIndicator />
       </View>
+      <StarField />
       <TextViewport paragraphs={paragraphs} onLastComplete={handleLastParagraphComplete} />
       <ChoiceList
         choices={choices}
