@@ -11,6 +11,8 @@ type Props = {
 export function TypewriterText({ text, msPerChar = 28, style, onComplete }: Props) {
   const [revealed, setRevealed] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => { onCompleteRef.current = onComplete; });
 
   useEffect(() => {
     setRevealed(0);
@@ -20,7 +22,6 @@ export function TypewriterText({ text, msPerChar = 28, style, onComplete }: Prop
       setRevealed((r) => {
         if (r >= text.length) {
           if (intervalRef.current) clearInterval(intervalRef.current);
-          onComplete?.();
           return r;
         }
         return r + 1;
@@ -31,6 +32,13 @@ export function TypewriterText({ text, msPerChar = 28, style, onComplete }: Prop
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [text, msPerChar]);
+
+  // Fire onComplete after commit, not inside the state updater
+  useEffect(() => {
+    if (text.length > 0 && revealed >= text.length) {
+      onCompleteRef.current?.();
+    }
+  }, [revealed, text.length]);
 
   return (
     <Text style={[styles.text, style]} selectable={false}>

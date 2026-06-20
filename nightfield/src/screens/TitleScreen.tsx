@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable, StyleSheet, StatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useGameStore } from '../store/gameStore';
 import { hasSave, loadGame } from '../engine/saveSystem';
 
@@ -8,6 +9,7 @@ type Props = {
 };
 
 export function TitleScreen({ onStart }: Props) {
+  const insets = useSafeAreaInsets();
   const setPhase = useGameStore((s) => s.setPhase);
   const resetGame = useGameStore((s) => s.resetGame);
   const [canContinue, setCanContinue] = useState(false);
@@ -30,7 +32,7 @@ export function TitleScreen({ onStart }: Props) {
   };
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 }]}>
       <StatusBar hidden />
       <View style={styles.titleBlock}>
         <Text style={styles.title}>NIGHTFIELD</Text>

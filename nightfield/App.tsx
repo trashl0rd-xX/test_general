@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useGameStore } from './src/store/gameStore';
 import { loadRooms, loadEntities } from './src/utils/roomLoader';
 import { TitleScreen } from './src/screens/TitleScreen';
@@ -16,13 +17,15 @@ export default function App() {
   }, []);
 
   return (
-    <View style={styles.root}>
-      {screen === 'title' ? (
-        <TitleScreen onStart={() => setScreen('game')} />
-      ) : (
-        <GameScreen onTitle={() => setScreen('title')} />
-      )}
-    </View>
+    <SafeAreaProvider>
+      <View style={styles.root}>
+        {screen === 'title' ? (
+          <TitleScreen onStart={() => setScreen('game')} />
+        ) : (
+          <GameScreen onTitle={() => setScreen('title')} />
+        )}
+      </View>
+    </SafeAreaProvider>
   );
 }
 

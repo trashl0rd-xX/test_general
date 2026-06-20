@@ -7,9 +7,10 @@ type Props = {
   choices: NarrativeChoice[];
   onChoose: (index: number) => void;
   visible: boolean;
+  style?: object;
 };
 
-export function ChoiceList({ choices, onChoose, visible }: Props) {
+export function ChoiceList({ choices, onChoose, visible, style }: Props) {
   const sanity = useGameStore((s) => s.sanity);
 
   if (!visible || choices.length === 0) return null;
@@ -27,7 +28,7 @@ export function ChoiceList({ choices, onChoose, visible }: Props) {
       : displayed;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       {withPhantom.map((choice, i) => (
         <Pressable
           key={`choice-${choice.index}-${i}`}

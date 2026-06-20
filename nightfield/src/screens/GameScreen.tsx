@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, StatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useGameStore } from '../store/gameStore';
 import { narrativeEngine } from '../engine/narrativeEngine';
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function GameScreen({ onTitle }: Props) {
+  const insets = useSafeAreaInsets();
   const currentRoomId = useGameStore((s) => s.currentRoomId);
   const phase = useGameStore((s) => s.phase);
   const modifySanity = useGameStore((s) => s.modifySanity);
@@ -107,9 +109,16 @@ export function GameScreen({ onTitle }: Props) {
   return (
     <View style={styles.root}>
       <StatusBar hidden />
-      <SanityIndicator />
+      <View style={{ height: insets.top }}>
+        <SanityIndicator />
+      </View>
       <TextViewport paragraphs={paragraphs} onLastComplete={handleLastParagraphComplete} />
-      <ChoiceList choices={choices} onChoose={handleChoose} visible={choicesVisible} />
+      <ChoiceList
+        choices={choices}
+        onChoose={handleChoose}
+        visible={choicesVisible}
+        style={{ paddingBottom: Math.max(32, insets.bottom + 8) }}
+      />
     </View>
   );
 }
