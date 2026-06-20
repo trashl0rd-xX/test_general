@@ -7,7 +7,7 @@ const STARS = Array.from({ length: 35 }, (_, i) => ({
   x: seededRandom(i * 31 + 7) * 96 + 2,
   y: seededRandom(i * 43 + 13) * 68,
   size: seededRandom(i * 17 + 3) * 1.0 + 0.5,
-  opacity: seededRandom(i * 53 + 19) * 0.35 + 0.12,
+  opacity: seededRandom(i * 53 + 19) * 0.40 + 0.20,
 }));
 
 const TREES = Array.from({ length: 18 }, (_, i) => ({
@@ -54,7 +54,7 @@ export function TitleArt() {
             left: `${tree.x}%`,
             width: tree.width,
             height: tree.height,
-            backgroundColor: '#010101',
+            backgroundColor: '#000000',
           }}
         />
       ))}
@@ -65,7 +65,7 @@ export function TitleArt() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#080808',
+    backgroundColor: '#0a0a0f',
     overflow: 'hidden',
   },
   moonWrap: {
