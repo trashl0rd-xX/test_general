@@ -11,7 +11,7 @@ import { TextViewport } from '../components/narrative/TextViewport';
 import { PlayerInput } from '../components/narrative/PlayerInput';
 import { SanityIndicator } from '../components/hud/SanityIndicator';
 import { StarField } from '../components/hud/StarField';
-import { sendAction } from '../engine/claudeNarrator';
+import { matchChoice } from '../utils/matchChoice';
 import type { NarrativeChoice } from '../types/narrative';
 
 // Ink story — compiled JSON bundled at build time
@@ -26,22 +26,18 @@ export function GameScreen({ onTitle }: Props) {
   const currentRoomId = useGameStore((s) => s.currentRoomId);
   const phase = useGameStore((s) => s.phase);
   const modifySanity = useGameStore((s) => s.modifySanity);
-  const setFlag = useGameStore((s) => s.setFlag);
-  const addToInventory = useGameStore((s) => s.addToInventory);
   const rooms = useGameStore((s) => s.rooms);
-  const moveTo = useGameStore((s) => s.moveTo);
   const inkState = useGameStore((s) => s.inkState);
 
   const [paragraphs, setParagraphs] = useState<string[]>([]);
+  const [choices, setChoices] = useState<NarrativeChoice[]>([]);
   const [choicesVisible, setChoicesVisible] = useState(false);
-  const [isResponding, setIsResponding] = useState(false);
   const initialized = useRef(false);
-  const paragraphsRef = useRef<string[]>([]);
-  useEffect(() => { paragraphsRef.current = paragraphs; }, [paragraphs]);
 
   const applyNarrativeResult = useCallback(
     (result: { paragraphs: string[]; choices: NarrativeChoice[] }) => {
       setParagraphs((prev) => [...prev.slice(-20), ...result.paragraphs]);
+      setChoices(result.choices);
       setChoicesVisible(false);
     },
     []
@@ -96,39 +92,34 @@ export function GameScreen({ onTitle }: Props) {
   }, []);
 
   const handleAction = useCallback(
-    async (text: string) => {
+    (text: string) => {
       const trimmed = text.trim();
-      if (!trimmed || isResponding) return;
+      if (!trimmed) return;
 
-      setIsResponding(true);
-      Haptics.selectionAsync();
-      setParagraphs((prev) => [...prev.slice(-20), `› ${trimmed}`]);
-      entitySystem.tick();
-
-      try {
-        const { paragraphs: resp, commands } = await sendAction(trimmed, {
-          recentParagraphs: paragraphsRef.current,
-          sanity: useGameStore.getState().sanity,
-          flags: useGameStore.getState().flags,
-          inventory: useGameStore.getState().inventory.map((i) => i.itemId),
-        });
-
-        for (const cmd of commands) {
-          if (cmd.type === 'SANITY') modifySanity(cmd.delta);
-          else if (cmd.type === 'SET_FLAG') setFlag(cmd.key, true);
-          else if (cmd.type === 'ADD_ITEM') addToInventory(cmd.itemId);
-          else if (cmd.type === 'PHASE') useGameStore.getState().setPhase(cmd.phase as 'title' | 'playing' | 'encounter' | 'hallucination' | 'gameover' | 'ending');
-        }
-
-        setParagraphs((prev) => [...prev.slice(-20), ...resp]);
-        saveGame(0).catch(() => {});
-      } catch {
-        setParagraphs((prev) => [...prev, 'Something in the dark does not answer.']);
-      } finally {
-        setIsResponding(false);
+      const idx = matchChoice(trimmed, choices);
+      if (idx === null) {
+        const fallbacks = [
+          'Nothing in the field acknowledges this.',
+          "The dark doesn't change.",
+          "You try. The night doesn't move.",
+          "Something about that doesn't work here.",
+          "The words leave you. Nothing comes back.",
+        ];
+        setParagraphs((prev) => [
+          ...prev,
+          fallbacks[Math.floor(Math.random() * fallbacks.length)],
+        ]);
+        return;
       }
+
+      setChoicesVisible(false);
+      Haptics.selectionAsync();
+      const result = narrativeEngine.choose(idx);
+      entitySystem.tick();
+      applyNarrativeResult(result);
+      saveGame(0).catch(() => {});
     },
-    [isResponding, modifySanity, setFlag, addToInventory]
+    [choices, applyNarrativeResult]
   );
 
   const handleLastParagraphComplete = useCallback(() => {
@@ -151,7 +142,6 @@ export function GameScreen({ onTitle }: Props) {
       {choicesVisible && phase === 'playing' && (
         <PlayerInput
           onSubmit={handleAction}
-          disabled={isResponding}
           style={{ paddingBottom: Math.max(32, insets.bottom + 8) }}
         />
       )}

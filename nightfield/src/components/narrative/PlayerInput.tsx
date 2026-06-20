@@ -3,7 +3,7 @@ import { TextInput, View, Text, StyleSheet } from 'react-native';
 
 type Props = {
   onSubmit: (text: string) => void;
-  disabled: boolean;
+  disabled?: boolean;
   style?: object;
 };
 
