@@ -11,6 +11,7 @@ import { TextViewport } from '../components/narrative/TextViewport';
 import { PlayerInput } from '../components/narrative/PlayerInput';
 import { SanityIndicator } from '../components/hud/SanityIndicator';
 import { StarField } from '../components/hud/StarField';
+import { FlameBackground } from '../components/hud/FlameBackground';
 import { matchChoice } from '../utils/matchChoice';
 import type { NarrativeChoice } from '../types/narrative';
 
@@ -138,7 +139,10 @@ export function GameScreen({ onTitle }: Props) {
         <SanityIndicator />
       </View>
       <StarField />
-      <TextViewport paragraphs={paragraphs} onLastComplete={handleLastParagraphComplete} />
+      <View style={{ flex: 1 }}>
+        <FlameBackground />
+        <TextViewport paragraphs={paragraphs} onLastComplete={handleLastParagraphComplete} />
+      </View>
       {choicesVisible && phase === 'playing' && (
         <PlayerInput
           onSubmit={handleAction}
