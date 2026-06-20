@@ -3,6 +3,7 @@ import { View, Text, Pressable, StyleSheet, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useGameStore } from '../store/gameStore';
 import { hasSave, loadGame } from '../engine/saveSystem';
+import { TitleArt } from '../components/hud/TitleArt';
 
 type Props = {
   onStart: () => void;
@@ -38,6 +39,9 @@ export function TitleScreen({ onStart }: Props) {
         <Text style={styles.title}>NIGHTFIELD</Text>
         <Text style={styles.subtitle}>a horror in text</Text>
       </View>
+      <View style={{ flex: 1 }}>
+        <TitleArt />
+      </View>
       <View style={styles.menu}>
         {canContinue && (
           <Pressable style={styles.item} onPress={handleContinue}>
@@ -56,12 +60,11 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: '#080808',
-    justifyContent: 'space-between',
-    paddingVertical: 80,
     paddingHorizontal: 32,
   },
   titleBlock: {
-    marginTop: 60,
+    marginTop: 48,
+    marginBottom: 8,
   },
   title: {
     color: '#c8bfa8',

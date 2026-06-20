@@ -8,9 +8,10 @@ import { entitySystem } from '../engine/entitySystem';
 import { saveGame } from '../engine/saveSystem';
 import { startAmbient, stopAmbient, setAmbientIntensity } from '../engine/ambientAudio';
 import { TextViewport } from '../components/narrative/TextViewport';
-import { ChoiceList } from '../components/narrative/ChoiceList';
+import { PlayerInput } from '../components/narrative/PlayerInput';
 import { SanityIndicator } from '../components/hud/SanityIndicator';
 import { StarField } from '../components/hud/StarField';
+import { sendAction } from '../engine/claudeNarrator';
 import type { NarrativeChoice } from '../types/narrative';
 
 // Ink story — compiled JSON bundled at build time
@@ -25,20 +26,23 @@ export function GameScreen({ onTitle }: Props) {
   const currentRoomId = useGameStore((s) => s.currentRoomId);
   const phase = useGameStore((s) => s.phase);
   const modifySanity = useGameStore((s) => s.modifySanity);
+  const setFlag = useGameStore((s) => s.setFlag);
+  const addToInventory = useGameStore((s) => s.addToInventory);
   const rooms = useGameStore((s) => s.rooms);
   const moveTo = useGameStore((s) => s.moveTo);
   const inkState = useGameStore((s) => s.inkState);
 
   const [paragraphs, setParagraphs] = useState<string[]>([]);
-  const [choices, setChoices] = useState<NarrativeChoice[]>([]);
   const [choicesVisible, setChoicesVisible] = useState(false);
+  const [isResponding, setIsResponding] = useState(false);
   const initialized = useRef(false);
+  const paragraphsRef = useRef<string[]>([]);
+  useEffect(() => { paragraphsRef.current = paragraphs; }, [paragraphs]);
 
   const applyNarrativeResult = useCallback(
     (result: { paragraphs: string[]; choices: NarrativeChoice[] }) => {
       setParagraphs((prev) => [...prev.slice(-20), ...result.paragraphs]);
-      setChoices(result.choices);
-      setChoicesVisible(false); // wait for typewriter to finish
+      setChoicesVisible(false);
     },
     []
   );
@@ -91,19 +95,40 @@ export function GameScreen({ onTitle }: Props) {
     );
   }, []);
 
-  const handleChoose = useCallback(
-    (choiceIndex: number) => {
-      setChoicesVisible(false);
+  const handleAction = useCallback(
+    async (text: string) => {
+      const trimmed = text.trim();
+      if (!trimmed || isResponding) return;
+
+      setIsResponding(true);
       Haptics.selectionAsync();
-
-      const result = narrativeEngine.choose(choiceIndex);
+      setParagraphs((prev) => [...prev.slice(-20), `› ${trimmed}`]);
       entitySystem.tick();
-      applyNarrativeResult(result);
 
-      // Autosave after each action
-      saveGame(0).catch(() => {});
+      try {
+        const { paragraphs: resp, commands } = await sendAction(trimmed, {
+          recentParagraphs: paragraphsRef.current,
+          sanity: useGameStore.getState().sanity,
+          flags: useGameStore.getState().flags,
+          inventory: useGameStore.getState().inventory.map((i) => i.itemId),
+        });
+
+        for (const cmd of commands) {
+          if (cmd.type === 'SANITY') modifySanity(cmd.delta);
+          else if (cmd.type === 'SET_FLAG') setFlag(cmd.key, true);
+          else if (cmd.type === 'ADD_ITEM') addToInventory(cmd.itemId);
+          else if (cmd.type === 'PHASE') useGameStore.getState().setPhase(cmd.phase as 'title' | 'playing' | 'encounter' | 'hallucination' | 'gameover' | 'ending');
+        }
+
+        setParagraphs((prev) => [...prev.slice(-20), ...resp]);
+        saveGame(0).catch(() => {});
+      } catch {
+        setParagraphs((prev) => [...prev, 'Something in the dark does not answer.']);
+      } finally {
+        setIsResponding(false);
+      }
     },
-    [applyNarrativeResult]
+    [isResponding, modifySanity, setFlag, addToInventory]
   );
 
   const handleLastParagraphComplete = useCallback(() => {
@@ -123,12 +148,13 @@ export function GameScreen({ onTitle }: Props) {
       </View>
       <StarField />
       <TextViewport paragraphs={paragraphs} onLastComplete={handleLastParagraphComplete} />
-      <ChoiceList
-        choices={choices}
-        onChoose={handleChoose}
-        visible={choicesVisible}
-        style={{ paddingBottom: Math.max(32, insets.bottom + 8) }}
-      />
+      {choicesVisible && phase === 'playing' && (
+        <PlayerInput
+          onSubmit={handleAction}
+          disabled={isResponding}
+          style={{ paddingBottom: Math.max(32, insets.bottom + 8) }}
+        />
+      )}
     </View>
   );
 }

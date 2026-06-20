@@ -13,10 +13,11 @@ EXTERNAL hasItem(itemId)
 === open_field_center ===
 {not hasFlag("awakened"):
     You are lying on your back in a field.
-    The grass is cold and wet against your neck. Stars press against the sky with too much force, too much brightness. You don't know how long you've been here. You don't know how you got here.
-    You sit up.
-    The treeline surrounds you on all sides. A perfect circle of dark. The trees begin exactly where the starlight ends, as if the darkness was placed there deliberately.
-    Somewhere deep in the woods, to the north, something glows.
+    The grass is cold and wet against your neck. The cold goes through your shirt, through your skin. There are no sounds — not the sounds of something wrong, but the absence of right ones. No insects. No wind. Nothing moving.
+    The stars above press with too much brightness, too much intention, as if they've been placed there to look at you specifically. You don't know how long you've been here. You don't know how you got here.
+    You sit up. Your hands are shaking, but you can't feel them shake — only see it.
+    The treeline surrounds you on all sides. A perfect circle of dark. The trees begin exactly where the starlight ends, as if the darkness was placed there deliberately. As if the field is a stage and you are the thing being watched.
+    Somewhere deep in the woods, to the north, something glows amber. Not fire. Nothing that changes the way fire does.
     # SET_FLAG:awakened
     # SANITY:-3
 - else:
@@ -43,8 +44,8 @@ You move through the grass in a slow circle. It comes up to your knees. There's 
 
 === field_listen ===
 You hold your breath.
-Wind through grass. Something far off — an owl, maybe, or something making a sound like an owl. The hum of the field itself, low and constant, almost like electricity.
-Then, from the north: a single branch snapping. Something heavy.
+Wind through grass. Something far off — an owl, maybe, or something that has learned to make a sound like an owl. Under it: the hum. Low, constant, as if the field runs on something. Not electricity exactly — electricity is clean. This is older than that, older than the word for it.
+Then, from the north: a single branch snapping. Something heavy enough that you can feel the weight of it through the ground.
 {getSanity() < 50: You feel certain that whatever made that sound is now aware you heard it.}
 # SANITY:-4
 -> open_field_center
@@ -52,8 +53,8 @@ Then, from the north: a single branch snapping. Something heavy.
 // ============================================================
 
 === treeline_north ===
-The treeline is a wall. Up close the trees are older than they should be — trunks too wide, bark peeling in long strips. The darkness between them is complete. Not dim. Not shadowed. Complete.
-The light is visible through the canopy — pale, amber, half a mile north at least. Maybe more.
+The treeline is a wall. Up close the trees are older than they should be — trunks too wide, bark peeling in long strips that come away wet even though it hasn't rained. The air here smells of mineral and cold water and something underneath that you can't name and don't try to. The darkness between the trunks is complete. Not dim. Not shadowed. Complete, the way a closed eye is complete.
+The light is visible through the canopy — amber, steady, half a mile north at least. Maybe more.
 {getSanity() < 50: Something is breathing just past the first row of trees. You can hear it.}
 {getSanity() < 30: Your legs don't want to move into the dark.}
 # SANITY:-3
@@ -204,7 +205,7 @@ An enormous fallen trunk, five feet in diameter, its core hollowed by decades of
 You hear the creek before you reach it. Running water — the first sound that isn't wind or your own breathing or the thing in the trees.
 The creek is shallow, maybe three feet across. The water is black in the dark. Stones are visible under the surface, pale and smooth. On the far bank, the path continues north.
 {hasFlag("stalker_close"):
-    Your reflection in the water is wrong. Not wrong-shaped. Just slightly behind you. Like it needs a second to catch up.
+    Your reflection in the water is wrong. Not the shape of it — the timing. You step left; it steps left, but a beat later, as if it's making a decision rather than following. You don't look at it again.
     # SANITY:-10
 }
 # SANITY:-1
@@ -239,7 +240,7 @@ The path narrows to almost nothing. Branches drag across your arms. The light fr
 - -> dense_thicket
 
 === dense_thicket_encounter ===
-You can't see it. You can hear it — directly behind you, close enough that you feel the air move.
+You can't see it. You can hear it — directly behind you, close enough that when it exhales you feel it against the back of your neck. Not warm. Not cold. Exactly the temperature of the inside of a body. Like it has learned what warmth means but not why.
 # SANITY:-5
 * [Run]
     You push forward through the thicket, branches tearing at your face. You don't look back. You come out the other side shaking, something pulling at you that you have to force yourself not to name.
@@ -309,8 +310,8 @@ From here you can also see that the path between the treelines — the direct no
 === fallen_stones ===
 A ring of large stones, half-buried, maybe eight feet in diameter. Not natural. Placed. Old enough that the forest has mostly swallowed them but not so old that you can't see the arrangement was intentional.
 {not hasFlag("read_stone"):
-    One stone has markings on its flat face. You look closer. Names. Dozens of names, carved at different depths over what must be generations. The most recent one is shallow, half-finished.
-    It could be your name. You're not certain either way.
+    One stone has markings on its flat face. You crouch close. Names — dozens of names, carved at different depths over what must be generations, each weathered smooth by different amounts of time. The most recent is barely scratched in, unfinished, like whoever started it was interrupted mid-stroke.
+    You run your thumb along the letters. You know this handwriting. You know it because it is yours.
     # SET_FLAG:read_stone
     # SANITY:-10
 }
@@ -347,8 +348,8 @@ The shack is ten feet in front of you. Up close: wooden walls, roof moss-covered
 === ending_passage ===
 Inside: a table, a chair, a candle almost burned down to nothing. On the table, a key. The same make as the one you may or may not already have.
 There's a second door on the far wall. A real door — solid, with hinges and a frame.
-You try the handle. It opens onto more dark. But different dark. The kind that has roads in it, and distance, and somewhere else.
-You stand in the doorway for a long time.
+You try the handle. It opens onto more dark. But different dark — the kind that has depth to it, distance, somewhere else entirely. There is road in it, and the sound of someone else's radio very far away, and a smell like diesel and morning.
+You stand in the doorway for a long time. You're not sure if this is a door out, or the same door that let something in. You think about the names on the stone.
 You don't go through.
 You're not sure —
 # PHASE:gameover
@@ -356,8 +357,8 @@ You're not sure —
 
 === ending_absorption ===
 The thing in the window turns toward you.
-It has been waiting in this exact spot for exactly this. You understand, in the way you sometimes understand things just before they stop mattering, that it knew you were coming. That the light was yours to follow.
-That you have been here before.
+It has the approximate shape of a person but the dimensions are slightly wrong in a way you cannot specify. It has been waiting in this exact spot for exactly this, for however many nights this is the same as.
+You understand, in the way you sometimes understand things just before they stop mattering, that it knew you were coming. That the light was a door held open. That this is not the first time you have arrived here thinking it was the first time.
 The candle goes out.
 # PHASE:gameover
 -> END
